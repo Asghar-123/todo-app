@@ -6,6 +6,11 @@ venv/
 dist/
 *.egg-info/
 
+# Node.js-specific ignores
+node_modules/
+build/
+*.log
+
 # Universal ignores
 .DS_Store
 Thumbs.db
