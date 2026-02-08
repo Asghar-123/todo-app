@@ -1,0 +1,87 @@
+openapi: 3.0.0
+info:
+  title: Chat API
+  version: 1.0.0
+  description: API for frontend to interact with the chatbot and manage conversation history.
+
+servers:
+  - url: http://localhost:8000 # Example URL for Chat API
+
+paths:
+  /chat/message:
+    post:
+      summary: Send a message to the chatbot and get a response
+      operationId: sendMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - user_id
+                - message
+              properties:
+                user_id:
+                  type: string
+                  description: The ID of the user sending the message.
+                message:
+                  type: string
+                  description: The user's message.
+      responses:
+        '200':
+          description: Chatbot response.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  bot_response:
+                    type: string
+                    description: The chatbot's response message.
+                  conversation_id:
+                    type: string
+                    description: The ID of the conversation session.
+        '400':
+          description: Invalid input.
+
+  /chat/history:
+    get:
+      summary: Retrieve conversation history for a user
+      operationId: getConversationHistory
+      parameters:
+        - in: query
+          name: user_id
+          schema:
+            type: string
+          required: true
+          description: The ID of the user.
+      responses:
+        '200':
+          description: Conversation history retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ConversationEntry'
+        '404':
+          description: User not found or no conversation history.
+
+components:
+  schemas:
+    ConversationEntry:
+      type: object
+      properties:
+        id:
+          type: string
+        user_id:
+          type: string
+        message_content:
+          type: string
+        message_type:
+          type: string
+          enum: [user, bot]
+        timestamp:
+          type: string
+          format: date-time

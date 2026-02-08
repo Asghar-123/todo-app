@@ -1,0 +1,23 @@
+# Tool definitions for the OpenAI Agent
+# Each entry specifies a tool that the AI can call.
+# The `schema` points to the Pydantic model definition for the tool.
+
+tools:
+  - name: CreateTask
+    description: Creates a new todo task.
+    schema: mcp_tools.tools.create_task:CreateTaskTool # Path to the Pydantic model
+  - name: ListTasks
+    description: Lists all existing todo tasks. Can optionally filter by completion status.
+    schema: mcp_tools.tools.list_tasks:ListTasksTool # Path to the Pydantic model
+  - name: MarkTaskStatus
+    description: Marks an existing todo task as complete or incomplete.
+    schema: mcp_tools.tools.mark_status:MarkTaskStatusTool # Path to the Pydantic model
+  - name: FilterTasks
+    description: Filters and lists todo tasks based on various criteria like completion status or due date.
+    schema: mcp_tools.tools.filter_tasks:FilterTasksTool # Path to the Pydantic model
+  - name: UpdateTask
+    description: Updates an existing todo task's description or due date.
+    schema: mcp_tools.tools.update_task:UpdateTaskTool # Path to the Pydantic model
+  - name: DeleteTask
+    description: Deletes an existing todo task by its ID.
+    schema: mcp_tools.tools.delete_task:DeleteTaskTool # Path to the Pydantic model

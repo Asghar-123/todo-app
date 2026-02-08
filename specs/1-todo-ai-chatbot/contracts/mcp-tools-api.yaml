@@ -1,0 +1,190 @@
+openapi: 3.0.0
+info:
+  title: MCP Todo Tools API
+  version: 1.0.0
+  description: API for AI agent to interact with stateless todo operations.
+
+servers:
+  - url: http://localhost:8001 # Example URL for MCP Tool Server
+
+paths:
+  /tasks/create:
+    post:
+      summary: Create a new todo task
+      operationId: createTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - description
+              properties:
+                description:
+                  type: string
+                  description: The task description.
+                due_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: Optional due date for the task.
+      responses:
+        '200':
+          description: Task created successfully.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: string
+                    description: The ID of the created task.
+                  description:
+                    type: string
+                  status:
+                    type: string
+                    enum: [pending, completed]
+        '400':
+          description: Invalid input.
+
+  /tasks/list:
+    get:
+      summary: List todo tasks
+      operationId: listTasks
+      parameters:
+        - in: query
+          name: status
+          schema:
+            type: string
+            enum: [pending, completed, all]
+          description: Filter tasks by status. Defaults to 'all'.
+        - in: query
+          name: due_date:
+            type: string
+            format: date
+          description: Filter tasks by due date.
+      responses:
+        '200':
+          description: List of tasks retrieved successfully.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Task'
+
+  /tasks/update:
+    put:
+      summary: Update an existing todo task
+      operationId: updateTask
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+              properties:
+                id:
+                  type: string
+                  description: The ID of the task to update.
+                description:
+                  type: string
+                  nullable: true
+                  description: New task description.
+                due_date:
+                  type: string
+                  format: date-time
+                  nullable: true
+                  description: New due date for the task.
+                status:
+                  type: string
+                  enum: [pending, completed]
+                  nullable: true
+                  description: New status for the task.
+      responses:
+        '200':
+          description: Task updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found.
+        '400':
+          description: Invalid input.
+
+  /tasks/delete:
+    delete:
+      summary: Delete a todo task
+      operationId: deleteTask
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: true
+          description: The ID of the task to delete.
+      responses:
+        '200':
+          description: Task deleted successfully.
+        '404':
+          description: Task not found.
+
+  /tasks/mark-status:
+    post:
+      summary: Mark a task as complete or incomplete
+      operationId: markTaskStatus
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - id
+                - status
+              properties:
+                id:
+                  type: string
+                  description: The ID of the task to update.
+                status:
+                  type: string
+                  enum: [pending, completed]
+                  description: The new status of the task.
+      responses:
+        '200':
+          description: Task status updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Task'
+        '404':
+          description: Task not found.
+        '400':
+          description: Invalid input.
+
+components:
+  schemas:
+    Task:
+      type: object
+      properties:
+        id:
+          type: string
+        description:
+          type: string
+        due_date:
+          type: string
+          format: date-time
+          nullable: true
+        status:
+          type: string
+          enum: [pending, completed]
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time

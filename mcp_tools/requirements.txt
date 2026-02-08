@@ -1,0 +1,9 @@
+requests
+python-dotenv
+fastapi
+uvicorn[standard]
+sqlmodel
+psycopg2-binary
+openai
+PyYAML
+pydantic
